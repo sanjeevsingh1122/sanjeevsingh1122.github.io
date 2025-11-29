@@ -1,0 +1,173 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum ItemSourceType {
+  UPLOAD
+  LINK
+  TEXT
+  YOUTUBE
+}
+
+enum FlashcardRating {
+  AGAIN
+  HARD
+  GOOD
+  EASY
+}
+
+enum StudyType {
+  FLASHCARDS
+  QUIZ
+}
+
+enum ShareMode {
+  PUBLIC
+  INVITE_ONLY
+}
+
+enum CollaborationRole {
+  COMMENTER
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+model User {
+  id           String              @id @default(uuid())
+  email        String              @unique
+  passwordHash String
+  name         String?
+  googleId     String?             @unique
+  profileImage String?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  items        Item[]
+  folders      Folder[]            @relation("FolderOwner")
+  comments     Comment[]
+  studySessions StudySession[]
+  invites      CollaborationInvite[] @relation("Invitee")
+}
+
+model Folder {
+  id        String   @id @default(uuid())
+  name      String
+  owner     User     @relation("FolderOwner", fields: [ownerId], references: [id])
+  ownerId   String
+  parent    Folder?  @relation("FolderHierarchy", fields: [parentId], references: [id])
+  parentId  String?
+  children  Folder[] @relation("FolderHierarchy")
+  items     Item[]
+  createdAt DateTime @default(now())
+}
+
+model Item {
+  id           String          @id @default(uuid())
+  owner        User            @relation(fields: [ownerId], references: [id])
+  ownerId      String
+  folder       Folder?         @relation(fields: [folderId], references: [id])
+  folderId     String?
+  title        String
+  sourceType   ItemSourceType
+  sourceUrl    String?
+  storageKey   String?
+  language     String          @default("en")
+  tags         String[]
+  rawText      String?
+  notes        Json?
+  summary      String?
+  insights     String[]
+  ttsScript    String?
+  ttsAudioUrl  String?
+  contentType  String?
+  flashcards   Flashcard[]
+  quizzes      QuizQuestion[]
+  comments     Comment[]
+  sharedLinks  SharedNote[]
+  invites      CollaborationInvite[]
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+}
+
+model Flashcard {
+  id         String          @id @default(uuid())
+  item       Item            @relation(fields: [itemId], references: [id])
+  itemId     String
+  question   String
+  answer     String
+  easeScore  Float           @default(2.5)
+  interval   Int             @default(1)
+  nextDue    DateTime        @default(now())
+  reviews    Int             @default(0)
+  lastRating FlashcardRating?
+  createdAt  DateTime        @default(now())
+  updatedAt  DateTime        @updatedAt
+}
+
+model QuizQuestion {
+  id          String    @id @default(uuid())
+  item        Item      @relation(fields: [itemId], references: [id])
+  itemId      String
+  question    String
+  choices     String[]
+  correctIndex Int
+  explanation String?
+  createdAt   DateTime  @default(now())
+}
+
+model StudySession {
+  id        String    @id @default(uuid())
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String
+  type      StudyType
+  score     Float?
+  metadata  Json?
+  createdAt DateTime  @default(now())
+}
+
+model SharedNote {
+  id        String   @id @default(uuid())
+  item      Item     @relation(fields: [itemId], references: [id])
+  itemId    String
+  ownerId   String
+  shareToken String  @unique
+  mode      ShareMode @default(PUBLIC)
+  createdAt DateTime @default(now())
+
+  @@unique([itemId])
+}
+
+model CollaborationInvite {
+  id           String             @id @default(uuid())
+  item         Item               @relation(fields: [itemId], references: [id])
+  itemId       String
+  inviterId    String
+  inviteeEmail String
+  invitee      User?              @relation("Invitee", fields: [inviteeId], references: [id])
+  inviteeId    String?
+  role         CollaborationRole  @default(COMMENTER)
+  status       InvitationStatus   @default(PENDING)
+  createdAt    DateTime           @default(now())
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  item      Item     @relation(fields: [itemId], references: [id])
+  itemId    String
+  author    User?    @relation(fields: [authorId], references: [id])
+  authorId  String?
+  parent    Comment? @relation("CommentThread", fields: [parentId], references: [id])
+  parentId  String?
+  replies   Comment[] @relation("CommentThread")
+  sectionId String?
+  content   String
+  createdAt DateTime  @default(now())
+}

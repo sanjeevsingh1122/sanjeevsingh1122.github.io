@@ -1,0 +1,32 @@
+.quiz-runner {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.quiz-runner article {
+  background: white;
+  border-radius: 1rem;
+  padding: 1rem;
+  border: 1px solid #e2e8f0;
+}
+
+.choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.choices label {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.6rem;
+  padding: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.choices label.selected {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
