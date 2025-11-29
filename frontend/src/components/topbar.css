@@ -1,0 +1,20 @@
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 2rem 0 2rem;
+}
+
+.topbar-user {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.topbar-user button {
+  padding: 0.4rem 0.8rem;
+  border: none;
+  background: #2563eb;
+  color: white;
+  border-radius: 0.4rem;
+}

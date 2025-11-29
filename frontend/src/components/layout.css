@@ -1,0 +1,24 @@
+.layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: 100vh;
+}
+
+.layout-main {
+  display: flex;
+  flex-direction: column;
+  background: #f8fafc;
+}
+
+.layout-content {
+  padding: 2rem;
+  flex: 1;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-size: 1.2rem;
+}

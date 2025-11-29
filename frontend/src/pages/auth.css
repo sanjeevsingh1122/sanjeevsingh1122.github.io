@@ -1,0 +1,22 @@
+.auth-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: linear-gradient(120deg, #dbeafe, #f8fafc);
+}
+
+.auth-page form {
+  background: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  width: min(420px, 90%);
+  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.1);
+}
+
+.error {
+  background: #fee2e2;
+  padding: 0.8rem;
+  border-radius: 0.6rem;
+  color: #b91c1c;
+}

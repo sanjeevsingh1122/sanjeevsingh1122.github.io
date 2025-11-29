@@ -1,0 +1,13 @@
+.metrics-card {
+  background: white;
+  border-radius: 1rem;
+  padding: 1rem;
+  border: 1px solid #cbd5f5;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.metrics-card strong {
+  font-size: 1.8rem;
+}
